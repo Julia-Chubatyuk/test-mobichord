@@ -1,8 +1,12 @@
 {
   "name": "mobichord-test",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julia-Chubatyuk/test-mobichord.git"
   },
   "dependencies": {
     "async": "^2.1.5",
