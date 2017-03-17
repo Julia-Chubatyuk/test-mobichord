@@ -9,11 +9,9 @@ var tmp = './tmp/';
 
 function start() {
   var args = getArgs();
-
   unzipFiles(args.inputFile);
 
   var persons = [];
-
   getFilesFromDirectory(tmp).then(function(files) {
     async.each(files, function(file, cb) {
       parseFile(tmp + file, function(data) {
@@ -77,6 +75,7 @@ function getFilesFromDirectory(dir) {
       if (err) {
         reject(err);
       } else {
+        console.log(files);
         resolve(files);
       }
     });
