@@ -1,43 +1,47 @@
 #!/usr/bin/env node
 
 var fs = require('fs');
-var unzip = require('unzip-stream');
+var unzip = require('unzipper');
 var csv = require('csvtojson');
 var async = require('async');
 
 var tmp = './tmp/';
+var persons = [];
 
 function start() {
   var args = getArgs();
-
+  if(!args.inputFile) {
+    throw new Error('Enter the input .zip file');
+  }
   unzipFiles(args.inputFile);
-
-  var persons = [];
-
-  getFilesFromDirectory(tmp).then(function(files) {
-    async.each(files, function(file, cb) {
-      parseFile(tmp + file, function(data) {
-        persons = persons.concat(data);
-        cb();
-      });
-    }, function() {
-      writeToFile(args.outputFile, persons);
-    });
-  });
 }
 
 function getArgs () {
   return {
     inputFile : process.argv[2],
-    outputFile: process.argv[3]
+    outputFile: process.argv[3] || 'output.json'
   };
 
 }
 
 function unzipFiles (name) {
   fs.mkdir(tmp, function() {
+    
     fs.createReadStream(name)
-        .pipe(unzip.Extract({ path: tmp }));
+        .pipe(unzip.Extract({ path: tmp }))
+        .on('close', function () {
+          
+          getFilesFromDirectory(tmp).then(function(files) {
+            async.each(files, function(file, cb) {
+              parseFile(tmp + file, function(data) {
+                persons = persons.concat(data);
+                cb();
+              });
+            }, function() {
+              writeToFile(persons);
+            });
+          });
+        })
   });
 }
 
@@ -83,7 +87,8 @@ function getFilesFromDirectory(dir) {
   });
 }
 
-function writeToFile(file, data) {
+function writeToFile(data) {
+  var file = getArgs().outputFile;
   fs.writeFile(file, JSON.stringify(data));
 }
 

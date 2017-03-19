@@ -11,7 +11,7 @@
   "dependencies": {
     "async": "^2.1.5",
     "csvtojson": "^1.1.4",
-    "unzip-stream": "^0.1.1"
+    "unzipper": "^0.8.8"
   },
   "main": "app.js",
   "bin": "app.js",
